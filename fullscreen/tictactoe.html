@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --fg: #f5f5f5;
+    --line: rgba(245,245,245,0.15);
+    --accent: #ffffff;
+    --dim: rgba(245,245,245,0.4);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Dot canvas ── */
+  #dots {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Wrapper ── */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  /* ── Title ── */
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    letter-spacing: 0.18em;
+    color: var(--fg);
+    line-height: 1;
+    text-align: center;
+  }
+  h1 span { color: var(--dim); font-size: 0.55em; letter-spacing: 0.35em; display: block; margin-top: 2px; }
+
+  /* ── Mode selector ── */
+  .mode-bar {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    padding: 8px 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .mode-btn.active {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .mode-btn:not(.active):hover { color: var(--fg); }
+
+  /* ── Status ── */
+  .status {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    min-height: 1.2em;
+    transition: color 0.3s;
+    text-align: center;
+  }
+  .status.win { color: var(--fg); }
+
+  /* ── Board ── */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    width: min(340px, 88vw);
+    aspect-ratio: 1;
+    position: relative;
+  }
+
+  /* Inner grid lines only */
+  .board::before, .board::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.18);
+  }
+  .board::before { width: 1px; height: 66.6%; top: 16.7%; left: 33.33%; }
+  .board::after  { width: 1px; height: 66.6%; top: 16.7%; left: 66.66%; }
+  .h-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .h-lines::before, .h-lines::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.18);
+    height: 1px;
+    width: 66.6%;
+    left: 16.7%;
+  }
+  .h-lines::before { top: 33.33%; }
+  .h-lines::after  { top: 66.66%; }
+
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: clamp(2rem, 10vw, 3.8rem);
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+    color: var(--fg);
+    transition: background 0.15s;
+    aspect-ratio: 1;
+    position: relative;
+    user-select: none;
+  }
+  .cell:hover:not(.taken) { background: rgba(255,255,255,0.04); }
+  .cell.taken { cursor: default; }
+
+  .cell .mark {
+    opacity: 0;
+    transform: scale(0.4) rotate(-8deg);
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    display: block;
+  }
+  .cell.taken .mark {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  .cell[data-player="O"] .mark { color: var(--dim); }
+
+  /* Win highlight */
+  .cell.winner .mark {
+    color: #fff;
+    text-shadow: 0 0 30px rgba(255,255,255,0.8);
+  }
+
+  /* Strike-through line */
+  .strike {
+    position: absolute;
+    background: var(--fg);
+    border-radius: 2px;
+    transform-origin: center;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .strike.show { opacity: 1; }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 12px; }
+  .btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 9px 24px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover { border-color: var(--fg); color: var(--fg); }
+
+  /* ── Score ── */
+  .scoreboard {
+    display: flex;
+    gap: 36px;
+    align-items: center;
+  }
+  .score-item { text-align: center; }
+  .score-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .score-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+  .score-sep { color: var(--line); font-size: 1.4rem; }
+</style>
+</head>
+<body>
+
+<canvas id="dots"></canvas>
+
+<div class="wrap">
+  <h1>TIC TAC TOE</h1>
+
+  <div class="mode-bar">
+    <button class="mode-btn active" onclick="setMode('ai')" id="btn-ai">vs AI</button>
+    <button class="mode-btn" onclick="setMode('2p')" id="btn-2p">2 Players</button>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-item">
+      <div class="score-label" id="lbl-x">You (X)</div>
+      <div class="score-val" id="score-x">0</div>
+    </div>
+    <div class="score-sep">·</div>
+    <div class="score-item">
+      <div class="score-label">Draws</div>
+      <div class="score-val" id="score-d">0</div>
+    </div>
+    <div class="score-sep">·</div>
+    <div class="score-item">
+      <div class="score-label" id="lbl-o">AI (O)</div>
+      <div class="score-val" id="score-o">0</div>
+    </div>
+  </div>
+
+  <div class="status" id="status">Your turn — X</div>
+
+  <div class="board" id="board">
+    <div class="h-lines"></div>
+    <div class="strike" id="strike"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="resetGame()">New Game</button>
+    <button class="btn" onclick="resetScore()">Reset Score</button>
+  </div>
+</div>
+
+<script>
+// ── Dot canvas ──────────────────────────────────────────────
+const canvas = document.getElementById('dots');
+const ctx = canvas.getContext('2d');
+let dots = [];
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function makeDot() {
+  return {
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.8,
+    vx: (Math.random() - 0.5) * 0.35,
+    vy: (Math.random() - 0.5) * 0.35,
+    a: Math.random() * 0.45 + 0.1,
+  };
+}
+
+for (let i = 0; i < 80; i++) dots.push(makeDot());
+
+function animDots() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const d of dots) {
+    d.x += d.vx;
+    d.y += d.vy;
+    if (d.x < 0) d.x = canvas.width;
+    if (d.x > canvas.width) d.x = 0;
+    if (d.y < 0) d.y = canvas.height;
+    if (d.y > canvas.height) d.y = 0;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${d.a})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(animDots);
+}
+animDots();
+
+// ── Game Logic ───────────────────────────────────────────────
+const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+let board   = Array(9).fill(null);
+let current = 'X';
+let locked  = false;
+let mode    = 'ai'; // 'ai' | '2p'
+let scores  = { X: 0, O: 0, D: 0 };
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-ai').classList.toggle('active', m === 'ai');
+  document.getElementById('btn-2p').classList.toggle('active', m === '2p');
+  document.getElementById('lbl-o').textContent = m === 'ai' ? 'AI (O)' : 'Player O';
+  document.getElementById('lbl-x').textContent = m === 'ai' ? 'You (X)' : 'Player X';
+  resetGame();
+}
+
+function buildBoard() {
+  const el = document.getElementById('board');
+  // Remove old cells
+  el.querySelectorAll('.cell').forEach(c => c.remove());
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.i = i;
+    cell.innerHTML = '<span class="mark"></span>';
+    cell.addEventListener('click', () => handleClick(i));
+    el.appendChild(cell);
+  }
+}
+
+function renderBoard() {
+  document.querySelectorAll('.cell').forEach((cell, i) => {
+    const v = board[i];
+    cell.classList.toggle('taken', !!v);
+    cell.dataset.player = v || '';
+    cell.querySelector('.mark').textContent = v || '';
+  });
+}
+
+function setStatus(txt, win = false) {
+  const el = document.getElementById('status');
+  el.textContent = txt;
+  el.classList.toggle('win', win);
+}
+
+function checkWinner() {
+  for (const [a,b,c] of WINS) {
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      return { winner: board[a], line: [a,b,c] };
+    }
+  }
+  if (board.every(Boolean)) return { winner: null, draw: true };
+  return null;
+}
+
+function drawStrike(line) {
+  const boardEl = document.getElementById('board');
+  const rect    = boardEl.getBoundingClientRect();
+  const cells   = boardEl.querySelectorAll('.cell');
+  const s = document.getElementById('strike');
+
+  const getCenter = i => {
+    const r = cells[i].getBoundingClientRect();
+    return {
+      x: r.left - rect.left + r.width  / 2,
+      y: r.top  - rect.top  + r.height / 2,
+    };
+  };
+
+  const a = getCenter(line[0]);
+  const b = getCenter(line[2]);
+  const dx = b.x - a.x, dy = b.y - a.y;
+  const len = Math.sqrt(dx*dx + dy*dy);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
+
+  s.style.width  = (len + 32) + 'px';
+  s.style.height = '2px';
+  s.style.left   = (cx - (len + 32) / 2) + 'px';
+  s.style.top    = cy + 'px';
+  s.style.transform = `rotate(${angle}deg)`;
+  setTimeout(() => s.classList.add('show'), 40);
+}
+
+function handleClick(i) {
+  if (locked || board[i]) return;
+  board[i] = current;
+  renderBoard();
+  const result = checkWinner();
+  if (result) { endGame(result); return; }
+  current = current === 'X' ? 'O' : 'X';
+
+  if (mode === 'ai' && current === 'O') {
+    locked = true;
+    setStatus('AI is thinking…');
+    setTimeout(() => { aiMove(); locked = false; }, 420);
+  } else {
+    setStatus(mode === 'ai' ? 'Your turn — X' : `Player ${current}'s turn`);
+  }
+}
+
+function aiMove() {
+  const move = getBestMove();
+  board[move] = 'O';
+  renderBoard();
+  const result = checkWinner();
+  if (result) { endGame(result); return; }
+  current = 'X';
+  setStatus('Your turn — X');
+}
+
+function getBestMove() {
+  // Win or block
+  for (const p of ['O', 'X']) {
+    for (const [a,b,c] of WINS) {
+      const line = [a,b,c];
+      const vals = line.map(i => board[i]);
+      const empties = line.filter(i => !board[i]);
+      if (vals.filter(v => v === p).length === 2 && empties.length === 1) {
+        return empties[0];
+      }
+    }
+  }
+  // Center
+  if (!board[4]) return 4;
+  // Corner
+  const corners = [0,2,6,8].filter(i => !board[i]);
+  if (corners.length) return corners[Math.floor(Math.random() * corners.length)];
+  // Any
+  const open = board.map((v,i) => v ? null : i).filter(i => i !== null);
+  return open[Math.floor(Math.random() * open.length)];
+}
+
+function endGame(result) {
+  locked = true;
+  document.getElementById('strike').classList.remove('show');
+
+  if (result.draw) {
+    scores.D++;
+    setStatus('Draw — well played');
+  } else {
+    scores[result.winner]++;
+    result.line.forEach(i => document.querySelectorAll('.cell')[i].classList.add('winner'));
+    drawStrike(result.line);
+    if (mode === 'ai') {
+      setStatus(result.winner === 'X' ? 'You win!' : 'AI wins!', true);
+    } else {
+      setStatus(`Player ${result.winner} wins!`, true);
+    }
+  }
+
+  document.getElementById('score-x').textContent = scores.X;
+  document.getElementById('score-o').textContent = scores.O;
+  document.getElementById('score-d').textContent = scores.D;
+
+  setTimeout(resetGame, 1800);
+}
+
+function resetGame() {
+  board   = Array(9).fill(null);
+  current = 'X';
+  locked  = false;
+  document.getElementById('strike').classList.remove('show');
+  buildBoard();
+  renderBoard();
+  setStatus(mode === 'ai' ? 'Your turn — X' : "Player X's turn");
+}
+
+function resetScore() {
+  scores = { X: 0, O: 0, D: 0 };
+  document.getElementById('score-x').textContent = 0;
+  document.getElementById('score-o').textContent = 0;
+  document.getElementById('score-d').textContent = 0;
+  resetGame();
+}
+
+// Init
+buildBoard();
+setStatus('Your turn — X');
+</script>
+</body>
+</html>
