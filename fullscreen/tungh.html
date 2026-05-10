@@ -1,0 +1,1027 @@
+<html lang="en"><head><base target="_blank">
+
+  <meta charset="utf-8">
+  <title>Triple T Horror</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      background: #000;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+    }
+
+    #gameContainer { position: absolute; }
+    #gameContainer canvas { position: absolute; }
+
+    #copyright-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999;
+      background: linear-gradient(90deg, #111, #1a1a1a);
+      border-bottom: 2px solid #ff9900;
+      box-shadow: 0 0 16px #ff9900;
+      color: #fff;
+      font-family: 'Pixelify Sans', sans-serif;
+      font-size: 13px;
+      text-align: center;
+      padding: 12px 20px;
+      letter-spacing: 1px;
+      animation: fadeOut 0.6s ease 4.4s forwards;
+    }
+
+    #copyright-banner span {
+      color: #ff9900;
+      text-shadow: 0 0 8px #ff9900;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-100%);
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+  <script id="gmsoft-jssdk" src="https://games.azgame.io/lib/gmsoftsdk_v5.js" async=""></script>
+
+  <div id="gameContainer" style="display: block; width: 749px; height: 421px; top: 221px; left: 0px;">
+    <canvas id="unity-canvas" width="749" height="421" style="width: 749px; height: 421px; cursor: url(&quot;data:image/cur;base64,AAACAAEAMDAAAAAAAAAoJAAAGAAAAAAAKAAAADAAAABgAAAAAQAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///wD///8A////AP///wD///8A////AP///wDg4OAA4ODgAODg4ADg4OAAy8vLANHR0QDR0dEA0dHRANHR0QCenp4Anp6eAJ6engCenp4Anp6eAJKSkgCIiIgAtLS0ALS0tAC0tLQAtLS0ALi4uAC4uLgAv7+/AMDAwADAwMAAwMDAAMDAwADAwMAAwMDAAL+/vwC/v78Avr6+AL6+vgC+vr4Avr6+AL6+vgC+vr4Avr6+/76+vgC+vr4Avr6+AOzs7AD///8A7OzsAP///wDs7OwA////AMvLywDLy8sAy8vLANzc3ADLy8sAy8vLAMvLywCysrIAsrKyALKysgCysrIAe3t7AHt7ewB7e3sAe3t7AIiIiACIiIgAl5eXAJeXlwCXl5cAv7+/AL+/vwC/v78Av7+/AMDAwADAwMAAwMDAAMDAwADAwMAAv7+/AL+/vwC/v78AoKCgAKCgoACgoKAAoKCgAKCgoACgoKD/xsbG/8PDw//Dw8MAw8PDAP///wD///8A////AP///wD///8A4ODgAODg4ADg4OAA7u7uAODg4ADg4OAAy8vLANHR0QDR0dEAk5OTAJOTkwCTk5MAk5OTAJqamgCampoAmpqaAJKSkgCIiIgApqamAKampgC4uLgAuLi4ALi4uAC4uLgAv7+/AKmpqQCpqakAqampAKmpqQC/v78Av7+/AL+/vwC/v78AwMDAAMDAwADAwMAAwMDAAMDAwP+pqan/6enp/+Xl5f+ysrL/srKyAOzs7AD///8A7OzsAP///wDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywCenp4Anp6eAIiIiACIiIgApqamALS0tAC0tLQAtLS0ALS0tAC/v78Av7+/AIyMjACMjIwAjIyMAL+/vwC/v78Av7+/AL+/vwC/v78AwMDAAMDAwADAwMAAwMDA/9vb2//f39////////39/f/f39//39/fAP///wD///8A////AODg4ADg4OAA4ODgAODg4ADg4OAA4ODgAODg4ADg4OAAy8vLANHR0QDR0dEA0dHRANHR0QDR0dEA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mpqaAJKSkgCIiIgApqamAKampv+/v7//4eHh//j4+P////////////j4+P/v7+//7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAP///wD///8A////AP///wD///8A////AP///wD///8A//////Dw8P/t7e3/////////////////8/Pz/+Pj4//MzMz/vr6+/7S0tP+enp7/np6eAIiIiACIiIj/pqam/7y8vP/T09P/6+vr////////////6+vr/9nZ2f/Z2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZAOzs7ADs7OwA7OzsAOzs7ADs7OwA7OzsAOzs7ADs7OwA7Ozs//b29v/19fX////////////U1NT/2tra/+/v7//Ly8v/vLy8/8XFxf+0tLT/kpKS/5KSkv+SkpL/mpqa/83Nzf/d3d3/y8vL/+vr6//29vb/29vb/9vb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/v//v7+//4+Pj////////////i4uL/9vb2//j4+P/v7+//3d3d/9fX1//Pz8//r6+v/83Nzf/Nzc3/0NDQ/97e3v/l5eX/vb29//f39//u7u7/7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAP///wD///8A////AP///wD///8A////AP///wD////////////////////////////////w8PD///////39/f/y8vL/1dXV/+3t7f/r6+v/19fX/+vr6//s7Oz/6+vr/9vb2//Ozs7/s7Oz/9fX1//X19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXAPHx8QDx8fEA8fHxAPHx8QDx8fEA8fHxAPHx8QDx8fH/8vLy//Pz8//f39//5eXl//z8/P/c3Nz/7+/v//f39//d3d3/0dHR//v7+//r6+v/zs7O//Dw8P/W1tb/zMzM/9DQ0P+np6f/jIyM/4yMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMANHR0QDR0dEA0dHRANHR0QDR0dEA0dHRANHR0QDR0dH/+/v7///////29vb/////////////////////////////////8PDw////////////7e3t///////8/Pz/8fHx/9vb2/+4uLj/uLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4AO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+//+/v7///////////////////////////////////////i4uL/39/f////////////4eHh//39/f/8/Pz/8fHx/9vb2/+oqKj/qKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioANzc3ADc3NwA3NzcANzc3ADc3NwA3NzcANzc3P///////////+zs7P/////////////////FxcX/1tbW/+fn5//Gxsb/5+fn///////39/f/wcHB//r6+v/y8vL/19fX/9fX1/+rq6v/n5+f/5+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAN/f3wDf398A39/fAN/f3wDf398A39/fAN/f3////////////////////////////+/v7/++vr7/9/f3///////w8PD////////////s7Oz/2NjY///////8/Pz/8PDw/9zc3P/Jycn/tLS0/56env+enp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAOzs7ADs7OwA7OzsAOzs7ADs7OwA7OzsAOzs7P/7+/v///////Hx8f/39/f//////8zMzP/CwsL////////////j4+P/+Pj4///////Ozs7/5OTk///////o6Oj/3t7e/+Tk5P+1tbX/pKSk/7S0tP+enp7/np6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAP///wD///8A////AP///wD///8A/////+Pj4//i4uL/8PDw/9bW1v/j4+P/9fX1/+Pj4//i4uL////////////7+/v/7+/v//b29v/p6en/9/f3///////9/f3/+Pj4/+vr6//R0dH/xMTE/8fHx/+0tLT/j4+P/4+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAP///wD///8A////AP///wD///8A/////////////////////////////////////////////////////////////////////////////////////////////////f39//j4+P/v7+//4+Pj/9XV1f/Hx8f/tLS0/56env+enp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAOzs7ADs7OwA7OzsAOzs7ADs7OwA7Ozs///////////////////////////////////////v7+///////////////////v7+////////////6urq//T09P/u7u7/1NTU//Pz8//6+vr/4uLi/+Tk5P/d3d3/x8fH/6ysrP+enp7/np6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAN3d3QDd3d0A3d3dAN3d3QDd3d0A3d3d/7u7u//W1tb//////+/v7//T09P/5ubm/8/Pz//MzMz/6urq//Hx8f/X19f/zMzM/9jY2P/n5+f/09PT/9/f3//x8fH/6Ojo///////y8vL/zc3N//39/f/+/v7/2dnZ/9XV1f/Y2Nj/srKy/7KysgCysrIAsrKyALKysgCysrIAsrKyALKysgCysrIAsrKyALKysgCysrIAsrKyALKysgCysrIAsrKyAP///wD///8A////AP///wD///////////b29v////////////////////////////T09P/////////////////5+fn/6enp////////////////////////////////////////////9vb2//////////////////////////////////Ly8v/y8vIA8vLyAPLy8gDy8vIA8vLyAPLy8gDy8vIA8vLyAPLy8gDy8vIA8vLyAPLy8gDy8vIA8vLyAOzs7ADs7OwA7OzsAOzs7ADs7Oz///////////////////////////////////////////////////////X19f/x8fH/9vb2////////////////////////////////////////////4+Pj/////////////f39////////////9PT0////////////////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AN/f3wDf398A39/fAN/f3wDf39//8PDw/9HR0f/x8fH/6+vr/8/Pz//Ozs7/8fHx/+bm5v/Gxsb/7u7u///////j4+P/3d3d///////29vb/z8/P//Pz8//6+vr/9/f3////////////9fX1////////////9fX1//7+/v///////////////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AO3t7QDt7e0A7e3tAO3t7f///////////+7u7v///////////+/v7//4+Pj////////////r6+v/////////////////////////////////////////////////////////////////////////////////+fn5//n5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AN7e3gDe3t4A3t7eAN7e3v////////////f39/////////////f39//////////////////////////////////7+/v/////////////////////////////////////////////////5+fn//////////8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////ANDQ0ADQ0NAA0NDQANDQ0P/7+/v//v7+/+zs7P///////v7+/9zc3P///////////+jo6P/////////////////y8vL///////////////////////////////////////////////8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//////////////////////n5+f////////////////////////////////////////////////////////////////////////////////////8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////APn5+QD5+fkA+fn5//f39///////9vb2/+zs7P/////////////////////////////////////////////////y8vL////////////09PT/9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A+fn5AP///wD5+fkA////AMTExADExMQAxMTE/9ra2v////////////////////////////Dw8P/////////////////h4eH/////////////////////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP7+/gD///8A////AO/v7wDv7+8A7+/v//7+/v/////////////////////////////////////////////////19fX/9fX1AP///wD///8A////AP///wD09PQA9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///////////////////////////////////////////Dw8P///////////////wD19fUA////AP///wD///8A////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////APb29gD29vb///////////////////////v7+////////////////wD///8A////AP///wD19fUA9fX1AP///wD///8A////AP///wD09PQA9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD5+fkA////APn5+QD///8A+fn5AP///wD5+fkA////AP///wD///////////////////////////////////8A////APDw8AD///8A////AP///wD19fUA////AP///wD///8A////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////APn5+QD///8A/v7+AP///wD///8A////AP7+/gD///8A////AP////////////////////////8A////AP///wD///8A////AP///wD///8A////AP///wD19fUA9fX1AP///wD///8A////AP///wD09PQA9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD5+fkA+fn5APn5+QD///8A////AP///wD///8A////AP////////8A////AP///wD///8A////AP///wD///8A////APDw8AD///8A////AP///wD19fUA////AP///wD///8A////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wDn5+cA////AP///wD///8A+fn5APX19QD+/v4A////AP///wD///8A////AA==&quot;), default;"></canvas>
+  </div>
+
+  <div id="loadingBar" style="color: white; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: Arial; display: none;">
+    loading... <span id="pct">100%</span>
+  </div>
+
+  <script>
+    setTimeout(function () {
+      var bannerEl = document.getElementById("copyright-banner");
+      if (bannerEl) {
+        setTimeout(function () {
+          bannerEl.remove();
+        }, 600);
+      }
+    }, 5000);
+  </script>
+
+  <script>
+    function firebaseLogEvent(event_name) {
+      console.log('firebaseLogEvent (stubbed):', event_name);
+    }
+    function firebaseLogEventParameter(event_name, event_param) {
+      console.log('firebaseLogEventParameter (stubbed):', event_name, event_param);
+    }
+    function firebaseSetUserProperties(props) {
+      console.log('firebaseSetUserProperties (stubbed):', props);
+    }
+  </script>
+
+  <script>
+    window.fileMergerConfig = {
+      files: [
+        { name: 'tung-sahur-horror-v25051505.data.unityweb', parts: 2 },
+      ],
+      basePath: 'https://cdn.jsdelivr.net/gh/3ejl/orbitzoneassets@latest/tung/Build/',
+      debug: true
+    };
+  </script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const defaultConfig = {
+        files: [],
+        basePath: "",
+        debug: true,
+      };
+
+      const config = Object.assign({}, defaultConfig, window.fileMergerConfig || {});
+      window.mergedFiles = window.mergedFiles || {};
+
+      const mergeStatus = {};
+      const mergeProgress = {};
+
+      let loadingDiv;
+      let loadingContent;
+
+      function initializeUI() {
+        loadingDiv = document.createElement("div");
+        loadingDiv.id = "file-merger-loading";
+        loadingDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.9);
+          color: white;
+          padding: 30px 40px;
+          border-radius: 10px;
+          font-family: monospace;
+          font-size: 16px;
+          z-index: 10000;
+          min-width: 300px;
+          text-align: center;
+        `;
+
+        loadingContent = document.createElement("div");
+        loadingContent.id = "file-merger-content";
+        loadingDiv.appendChild(loadingContent);
+        document.body.appendChild(loadingDiv);
+      }
+
+      function updateLoadingDisplay() {
+        if (!loadingContent) return;
+
+        const lines = [
+          '<div style="font-size: 18px; margin-bottom: 15px;">loading...</div>',
+        ];
+
+        config.files.forEach((file) => {
+          const status = mergeStatus[file.name] || "waiting";
+          const progress = mergeProgress[file.name] || {
+            current: 0,
+            total: file.parts,
+          };
+
+          let statusText = "";
+          let color = "#888";
+
+          if (status === "merging") {
+            statusText = ` merging... ${progress.current}/${progress.total}`;
+            color = "#ffa500";
+          } else if (status === "ready") {
+            statusText = "done";
+            color = "#00ff00";
+          } else if (status === "failed") {
+            statusText = "failed";
+            color = "#ff0000";
+          } else {
+            statusText = "Waiting...";
+          }
+
+          lines.push(
+            `<div style="margin: 8px 0; color: ${color};">${file.name}: ${statusText}</div>`
+          );
+        });
+
+        loadingContent.innerHTML = lines.join("");
+
+        const allDone = config.files.every(
+          (file) =>
+            mergeStatus[file.name] === "ready" ||
+            mergeStatus[file.name] === "failed"
+        );
+
+        if (allDone) {
+          setTimeout(() => {
+            loadingDiv.style.opacity = "0";
+            loadingDiv.style.transition = "opacity 0.5s";
+            setTimeout(() => loadingDiv.remove(), 500);
+          }, 1000);
+        }
+      }
+
+      function log() {
+        if (config.debug) console.log("[FileMerger]", ...arguments);
+      }
+
+      function error() {
+        console.error("[FileMerger]", ...arguments);
+      }
+
+      function normalizeUrl(url) {
+        try {
+          return decodeURIComponent(url.toString().split("?")[0]);
+        } catch (e) {
+          return url;
+        }
+      }
+
+      function urlsMatch(url1, url2) {
+        const norm1 = normalizeUrl(url1);
+        const norm2 = normalizeUrl(url2);
+
+        if (norm1 === norm2) return true;
+        if (norm1.endsWith(norm2) || norm2.endsWith(norm1)) return true;
+
+        return norm1.split("/").pop() === norm2.split("/").pop();
+      }
+
+      async function mergeSplitFiles(filePath, numParts) {
+        const fileName = filePath.split("/").pop();
+        mergeProgress[fileName] = { current: 0, total: numParts };
+        updateLoadingDisplay();
+
+        try {
+          const parts = [];
+          for (let i = 1; i <= numParts; i++) {
+            parts.push(`${filePath}.part${i}`);
+          }
+
+          log(`Merging ${filePath} from ${numParts} parts...`);
+
+          const buffers = [];
+          for (let i = 0; i < parts.length; i++) {
+            const response = await window.originalFetch(parts[i]);
+
+            if (!response.ok) {
+              if (response.status === 403 || response.status === 404) {
+                throw new Error(`Part missing: ${parts[i]}`);
+              }
+              throw new Error(
+                `failed to load sowwy (make a report in bug-reports in the discord) ${parts[i]}: ${response.status}`
+              );
+            }
+
+            const buffer = await response.arrayBuffer();
+            buffers.push(buffer);
+
+            mergeProgress[fileName].current = i + 1;
+            updateLoadingDisplay();
+          }
+
+          const totalSize = buffers.reduce((sum, buf) => sum + buf.byteLength, 0);
+          const mergedArray = new Uint8Array(totalSize);
+          let offset = 0;
+
+          for (const buffer of buffers) {
+            mergedArray.set(new Uint8Array(buffer), offset);
+            offset += buffer.byteLength;
+          }
+
+          log(` ${filePath} done: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
+          return mergedArray.buffer;
+        } catch (err) {
+          error(`Failed to merge ${filePath}:`, err);
+          throw err;
+        }
+      }
+
+      function shouldInterceptFile(url) {
+        const urlStr = normalizeUrl(url);
+        if (urlStr.includes(".part")) return null;
+
+        for (const file of config.files) {
+          const fileName = file.name;
+          const fullPath = config.basePath
+            ? `${config.basePath}${fileName}`
+            : fileName;
+
+          if (
+            urlsMatch(urlStr, fileName) ||
+            urlsMatch(urlStr, fullPath) ||
+            urlsMatch(urlStr, fileName + ".br") ||
+            urlsMatch(urlStr, fullPath + ".br")
+          ) {
+            return fileName;
+          }
+        }
+
+        return null;
+      }
+
+      function getMergedFile(filename) {
+        if (window.mergedFiles[filename]) return window.mergedFiles[filename];
+
+        for (const [key, value] of Object.entries(window.mergedFiles)) {
+          if (urlsMatch(key, filename)) return value;
+        }
+
+        return null;
+      }
+
+      if (!window.originalFetch) window.originalFetch = window.fetch;
+
+      window.fetch = function (url) {
+        const args = Array.prototype.slice.call(arguments, 1);
+        const filename = shouldInterceptFile(url);
+
+        if (filename) {
+          log("Intercepting fetch for:", filename);
+
+          return new Promise((resolve, reject) => {
+            const maxWait = 60000;
+            const startTime = Date.now();
+
+            const check = setInterval(() => {
+              const buffer = getMergedFile(filename);
+
+              if (buffer) {
+                clearInterval(check);
+                const contentType = filename.endsWith(".wasm")
+                  ? "application/wasm"
+                  : "application/octet-stream";
+                resolve(
+                  new Response(buffer, {
+                    status: 200,
+                    statusText: "OK",
+                    headers: {
+                      "Content-Type": contentType,
+                      "Content-Length": buffer.byteLength.toString(),
+                    },
+                  })
+                );
+              } else if (mergeStatus[filename] === "failed") {
+                clearInterval(check);
+                reject(new Error(`Merge failed for ${filename}`));
+              } else if (Date.now() - startTime > maxWait) {
+                clearInterval(check);
+                reject(new Error(`Timeout waiting for ${filename}`));
+              }
+            }, 100);
+          });
+        }
+
+        return window.originalFetch.call(this, url, ...args);
+      };
+
+      if (!window.OriginalXMLHttpRequest) {
+        window.OriginalXMLHttpRequest = window.XMLHttpRequest;
+      }
+
+      window.XMLHttpRequest = function (options) {
+        const xhr = new window.OriginalXMLHttpRequest(options);
+        const originalOpen = xhr.open;
+        const originalSend = xhr.send;
+        let requestUrl = "";
+
+        xhr.open = function (method, url) {
+          const args = Array.prototype.slice.call(arguments, 2);
+          requestUrl = url;
+          return originalOpen.call(this, method, url, ...args);
+        };
+
+        xhr.send = function () {
+          const args = Array.prototype.slice.call(arguments);
+          const filename = shouldInterceptFile(requestUrl);
+
+          if (filename) {
+            log("Intercepting XHR for:", filename);
+
+            const waitForMerge = () => {
+              const buffer = getMergedFile(filename);
+
+              if (buffer) {
+                Object.defineProperties(xhr, {
+                  status: { value: 200 },
+                  statusText: { value: "OK" },
+                  response: { value: buffer },
+                  responseType: { value: "arraybuffer" },
+                  readyState: { value: 4 },
+                });
+
+                setTimeout(() => {
+                  if (xhr.onreadystatechange) xhr.onreadystatechange();
+                  if (xhr.onload) xhr.onload({ type: "load", target: xhr });
+                }, 1);
+              } else if (mergeStatus[filename] === "failed") {
+                if (xhr.onerror) xhr.onerror(new Error("Merge Failed"));
+              } else {
+                setTimeout(waitForMerge, 100);
+              }
+            };
+
+            waitForMerge();
+            return;
+          }
+
+          return originalSend.call(this, ...args);
+        };
+
+        return xhr;
+      };
+
+      async function autoMergeFiles() {
+        if (!config.files.length) return;
+
+        updateLoadingDisplay();
+
+        try {
+          const promises = config.files.map((file) => {
+            const fullPath = config.basePath
+              ? `${config.basePath}${file.name}`
+              : file.name;
+
+            mergeStatus[file.name] = "merging";
+            updateLoadingDisplay();
+
+            return mergeSplitFiles(fullPath, file.parts)
+              .then((buffer) => {
+                window.mergedFiles[file.name] = buffer;
+                window.mergedFiles[fullPath] = buffer;
+                mergeStatus[file.name] = "ready";
+                updateLoadingDisplay();
+              })
+              .catch((err) => {
+                mergeStatus[file.name] = "failed";
+                updateLoadingDisplay();
+                error(err);
+              });
+          });
+
+          await Promise.all(promises);
+        } catch (e) {
+          error(e);
+        }
+      }
+
+      function init() {
+        if (document.body) {
+          initializeUI();
+          autoMergeFiles();
+        } else {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function () {
+              initializeUI();
+              autoMergeFiles();
+            });
+          } else {
+            setTimeout(init, 10);
+          }
+        }
+      }
+
+      init();
+    })();
+  </script>
+
+  <script>
+    var canvas = document.getElementById("unity-canvas");
+    var container = document.getElementById("gameContainer");
+    var loadingBar = document.getElementById("loadingBar");
+
+    var cdnBase = "https://cdn.jsdelivr.net/gh/3ejl/orbitzoneassets@latest/tung/Build";
+    var config = {
+      dataUrl:            cdnBase + "/tung-sahur-horror-v25051505.data.unityweb",
+      frameworkUrl:       cdnBase + "/tung-sahur-horror-v25051505.framework.js.unityweb",
+      codeUrl:            cdnBase + "/tung-sahur-horror-v25051505.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "azgames.io",
+      productName: "Tung Sahur Horror",
+      productVersion: "25051505",
+      pubId: "",
+      gameId: "tung-sahur-horror",
+      enableMoreGame: "yes",
+      enablePromotion: true,
+      eventLog: false
+    };
+
+    function onResize() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      var r = 540 / 960;
+      if (w * r > h) w = Math.ceil(h / r);
+      h = Math.floor(w * r);
+      container.style.width = canvas.style.width = w + "px";
+      container.style.height = canvas.style.height = h + "px";
+      container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
+      container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
+    }
+
+    onResize();
+    window.addEventListener("resize", onResize);
+
+    var script = document.createElement("script");
+    script.src = cdnBase + "/tung-sahur-horror-v25051505.loader.js";
+    script.onload = function() {
+      createUnityInstance(canvas, config, function(progress) {
+        document.getElementById("pct").innerText = Math.round(progress * 100) + "%";
+      }).then(function(instance) {
+        window.unityInstance = instance;
+        setTimeout(function() {
+          loadingBar.style.display = "none";
+          container.style.display = "block";
+          window.focus();
+        }, 2000);
+      }).catch(function(msg) {
+        alert(msg);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/gh/3ejl/orbitzoneassets@latest/tung/Build/tung-sahur-horror-v25051505.loader.js"></script>
+
+</body></html><html lang="en"><head><base target="_blank">
+
+  <meta charset="utf-8">
+  <title>Triple T Horror</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      background: #000;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+    }
+
+    #gameContainer { position: absolute; }
+    #gameContainer canvas { position: absolute; }
+
+    #copyright-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999;
+      background: linear-gradient(90deg, #111, #1a1a1a);
+      border-bottom: 2px solid #ff9900;
+      box-shadow: 0 0 16px #ff9900;
+      color: #fff;
+      font-family: 'Pixelify Sans', sans-serif;
+      font-size: 13px;
+      text-align: center;
+      padding: 12px 20px;
+      letter-spacing: 1px;
+      animation: fadeOut 0.6s ease 4.4s forwards;
+    }
+
+    #copyright-banner span {
+      color: #ff9900;
+      text-shadow: 0 0 8px #ff9900;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-100%);
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+  <script id="gmsoft-jssdk" src="https://games.azgame.io/lib/gmsoftsdk_v5.js" async=""></script>
+
+  <div id="gameContainer" style="display: block; width: 749px; height: 421px; top: 221px; left: 0px;">
+    <canvas id="unity-canvas" width="749" height="421" style="width: 749px; height: 421px; cursor: url(&quot;data:image/cur;base64,AAACAAEAMDAAAAAAAAAoJAAAGAAAAAAAKAAAADAAAABgAAAAAQAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///wD///8A////AP///wD///8A////AP///wDg4OAA4ODgAODg4ADg4OAAy8vLANHR0QDR0dEA0dHRANHR0QCenp4Anp6eAJ6engCenp4Anp6eAJKSkgCIiIgAtLS0ALS0tAC0tLQAtLS0ALi4uAC4uLgAv7+/AMDAwADAwMAAwMDAAMDAwADAwMAAwMDAAL+/vwC/v78Avr6+AL6+vgC+vr4Avr6+AL6+vgC+vr4Avr6+/76+vgC+vr4Avr6+AOzs7AD///8A7OzsAP///wDs7OwA////AMvLywDLy8sAy8vLANzc3ADLy8sAy8vLAMvLywCysrIAsrKyALKysgCysrIAe3t7AHt7ewB7e3sAe3t7AIiIiACIiIgAl5eXAJeXlwCXl5cAv7+/AL+/vwC/v78Av7+/AMDAwADAwMAAwMDAAMDAwADAwMAAv7+/AL+/vwC/v78AoKCgAKCgoACgoKAAoKCgAKCgoACgoKD/xsbG/8PDw//Dw8MAw8PDAP///wD///8A////AP///wD///8A4ODgAODg4ADg4OAA7u7uAODg4ADg4OAAy8vLANHR0QDR0dEAk5OTAJOTkwCTk5MAk5OTAJqamgCampoAmpqaAJKSkgCIiIgApqamAKampgC4uLgAuLi4ALi4uAC4uLgAv7+/AKmpqQCpqakAqampAKmpqQC/v78Av7+/AL+/vwC/v78AwMDAAMDAwADAwMAAwMDAAMDAwP+pqan/6enp/+Xl5f+ysrL/srKyAOzs7AD///8A7OzsAP///wDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywDLy8sAy8vLAMvLywCenp4Anp6eAIiIiACIiIgApqamALS0tAC0tLQAtLS0ALS0tAC/v78Av7+/AIyMjACMjIwAjIyMAL+/vwC/v78Av7+/AL+/vwC/v78AwMDAAMDAwADAwMAAwMDA/9vb2//f39////////39/f/f39//39/fAP///wD///8A////AODg4ADg4OAA4ODgAODg4ADg4OAA4ODgAODg4ADg4OAAy8vLANHR0QDR0dEA0dHRANHR0QDR0dEA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mpqaAJKSkgCIiIgApqamAKampv+/v7//4eHh//j4+P////////////j4+P/v7+//7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAP///wD///8A////AP///wD///8A////AP///wD///8A//////Dw8P/t7e3/////////////////8/Pz/+Pj4//MzMz/vr6+/7S0tP+enp7/np6eAIiIiACIiIj/pqam/7y8vP/T09P/6+vr////////////6+vr/9nZ2f/Z2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZANnZ2QDZ2dkA2dnZAOzs7ADs7OwA7OzsAOzs7ADs7OwA7OzsAOzs7ADs7OwA7Ozs//b29v/19fX////////////U1NT/2tra/+/v7//Ly8v/vLy8/8XFxf+0tLT/kpKS/5KSkv+SkpL/mpqa/83Nzf/d3d3/y8vL/+vr6//29vb/29vb/9vb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbANvb2wDb29sA29vbAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/v//v7+//4+Pj////////////i4uL/9vb2//j4+P/v7+//3d3d/9fX1//Pz8//r6+v/83Nzf/Nzc3/0NDQ/97e3v/l5eX/vb29//f39//u7u7/7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAO7u7gDu7u4A7u7uAP///wD///8A////AP///wD///8A////AP///wD////////////////////////////////w8PD///////39/f/y8vL/1dXV/+3t7f/r6+v/19fX/+vr6//s7Oz/6+vr/9vb2//Ozs7/s7Oz/9fX1//X19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXANfX1wDX19cA19fXAPHx8QDx8fEA8fHxAPHx8QDx8fEA8fHxAPHx8QDx8fH/8vLy//Pz8//f39//5eXl//z8/P/c3Nz/7+/v//f39//d3d3/0dHR//v7+//r6+v/zs7O//Dw8P/W1tb/zMzM/9DQ0P+np6f/jIyM/4yMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMAIyMjACMjIwAjIyMANHR0QDR0dEA0dHRANHR0QDR0dEA0dHRANHR0QDR0dH/+/v7///////29vb/////////////////////////////////8PDw////////////7e3t///////8/Pz/8fHx/9vb2/+4uLj/uLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4ALi4uAC4uLgAuLi4AO/v7wDv7+8A7+/vAO/v7wDv7+8A7+/vAO/v7wDv7+//+/v7///////////////////////////////////////i4uL/39/f////////////4eHh//39/f/8/Pz/8fHx/9vb2/+oqKj/qKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioAKioqACoqKgAqKioANzc3ADc3NwA3NzcANzc3ADc3NwA3NzcANzc3P///////////+zs7P/////////////////FxcX/1tbW/+fn5//Gxsb/5+fn///////39/f/wcHB//r6+v/y8vL/19fX/9fX1/+rq6v/n5+f/5+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAJ+fnwCfn58An5+fAN/f3wDf398A39/fAN/f3wDf398A39/fAN/f3////////////////////////////+/v7/++vr7/9/f3///////w8PD////////////s7Oz/2NjY///////8/Pz/8PDw/9zc3P/Jycn/tLS0/56env+enp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAOzs7ADs7OwA7OzsAOzs7ADs7OwA7OzsAOzs7P/7+/v///////Hx8f/39/f//////8zMzP/CwsL////////////j4+P/+Pj4///////Ozs7/5OTk///////o6Oj/3t7e/+Tk5P+1tbX/pKSk/7S0tP+enp7/np6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAP///wD///8A////AP///wD///8A/////+Pj4//i4uL/8PDw/9bW1v/j4+P/9fX1/+Pj4//i4uL////////////7+/v/7+/v//b29v/p6en/9/f3///////9/f3/+Pj4/+vr6//R0dH/xMTE/8fHx/+0tLT/j4+P/4+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAI+PjwCPj48Aj4+PAP///wD///8A////AP///wD///8A/////////////////////////////////////////////////////////////////////////////////////////////////f39//j4+P/v7+//4+Pj/9XV1f/Hx8f/tLS0/56env+enp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAOzs7ADs7OwA7OzsAOzs7ADs7OwA7Ozs///////////////////////////////////////v7+///////////////////v7+////////////6urq//T09P/u7u7/1NTU//Pz8//6+vr/4uLi/+Tk5P/d3d3/x8fH/6ysrP+enp7/np6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAJ6engCenp4Anp6eAN3d3QDd3d0A3d3dAN3d3QDd3d0A3d3d/7u7u//W1tb//////+/v7//T09P/5ubm/8/Pz//MzMz/6urq//Hx8f/X19f/zMzM/9jY2P/n5+f/09PT/9/f3//x8fH/6Ojo///////y8vL/zc3N//39/f/+/v7/2dnZ/9XV1f/Y2Nj/srKy/7KysgCysrIAsrKyALKysgCysrIAsrKyALKysgCysrIAsrKyALKysgCysrIAsrKyALKysgCysrIAsrKyAP///wD///8A////AP///wD///////////b29v////////////////////////////T09P/////////////////5+fn/6enp////////////////////////////////////////////9vb2//////////////////////////////////Ly8v/y8vIA8vLyAPLy8gDy8vIA8vLyAPLy8gDy8vIA8vLyAPLy8gDy8vIA8vLyAPLy8gDy8vIA8vLyAOzs7ADs7OwA7OzsAOzs7ADs7Oz///////////////////////////////////////////////////////X19f/x8fH/9vb2////////////////////////////////////////////4+Pj/////////////f39////////////9PT0////////////////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AN/f3wDf398A39/fAN/f3wDf39//8PDw/9HR0f/x8fH/6+vr/8/Pz//Ozs7/8fHx/+bm5v/Gxsb/7u7u///////j4+P/3d3d///////29vb/z8/P//Pz8//6+vr/9/f3////////////9fX1////////////9fX1//7+/v///////////////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AO3t7QDt7e0A7e3tAO3t7f///////////+7u7v///////////+/v7//4+Pj////////////r6+v/////////////////////////////////////////////////////////////////////////////////+fn5//n5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AN7e3gDe3t4A3t7eAN7e3v////////////f39/////////////f39//////////////////////////////////7+/v/////////////////////////////////////////////////5+fn//////////8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////ANDQ0ADQ0NAA0NDQANDQ0P/7+/v//v7+/+zs7P///////v7+/9zc3P///////////+jo6P/////////////////y8vL///////////////////////////////////////////////8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//////////////////////n5+f////////////////////////////////////////////////////////////////////////////////////8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////APn5+QD5+fkA+fn5//f39///////9vb2/+zs7P/////////////////////////////////////////////////y8vL////////////09PT/9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A+fn5AP///wD5+fkA////AMTExADExMQAxMTE/9ra2v////////////////////////////Dw8P/////////////////h4eH/////////////////////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP7+/gD///8A////AO/v7wDv7+8A7+/v//7+/v/////////////////////////////////////////////////19fX/9fX1AP///wD///8A////AP///wD09PQA9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///////////////////////////////////////////Dw8P///////////////wD19fUA////AP///wD///8A////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////APb29gD29vb///////////////////////v7+////////////////wD///8A////AP///wD19fUA9fX1AP///wD///8A////AP///wD09PQA9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD5+fkA////APn5+QD///8A+fn5AP///wD5+fkA////AP///wD///////////////////////////////////8A////APDw8AD///8A////AP///wD19fUA////AP///wD///8A////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wD///8A////APn5+QD///8A/v7+AP///wD///8A////AP7+/gD///8A////AP////////////////////////8A////AP///wD///8A////AP///wD///8A////AP///wD19fUA9fX1AP///wD///8A////AP///wD09PQA9PT0AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5APn5+QD///8A////AP///wD///8A////AP///wD///8A////AP///wD5+fkA+fn5APn5+QD///8A////AP///wD///8A////AP////////8A////AP///wD///8A////AP///wD///8A////APDw8AD///8A////AP///wD19fUA////AP///wD///8A////AP///wD09PQA////AP///wD///8A////AP///wD///8A5+fnAP///wD///8A+fn5AP7+/gD///8A////AP///wD///8A////AP///wDn5+cA////AP///wD///8A+fn5APX19QD+/v4A////AP///wD///8A////AA==&quot;), default;"></canvas>
+  </div>
+
+  <div id="loadingBar" style="color: white; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: Arial; display: none;">
+    loading... <span id="pct">100%</span>
+  </div>
+
+  <script>
+    setTimeout(function () {
+      var bannerEl = document.getElementById("copyright-banner");
+      if (bannerEl) {
+        setTimeout(function () {
+          bannerEl.remove();
+        }, 600);
+      }
+    }, 5000);
+  </script>
+
+  <script>
+    function firebaseLogEvent(event_name) {
+      console.log('firebaseLogEvent (stubbed):', event_name);
+    }
+    function firebaseLogEventParameter(event_name, event_param) {
+      console.log('firebaseLogEventParameter (stubbed):', event_name, event_param);
+    }
+    function firebaseSetUserProperties(props) {
+      console.log('firebaseSetUserProperties (stubbed):', props);
+    }
+  </script>
+
+  <script>
+    window.fileMergerConfig = {
+      files: [
+        { name: 'tung-sahur-horror-v25051505.data.unityweb', parts: 2 },
+      ],
+      basePath: 'https://cdn.jsdelivr.net/gh/3ejl/orbitzoneassets@latest/tung/Build/',
+      debug: true
+    };
+  </script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const defaultConfig = {
+        files: [],
+        basePath: "",
+        debug: true,
+      };
+
+      const config = Object.assign({}, defaultConfig, window.fileMergerConfig || {});
+      window.mergedFiles = window.mergedFiles || {};
+
+      const mergeStatus = {};
+      const mergeProgress = {};
+
+      let loadingDiv;
+      let loadingContent;
+
+      function initializeUI() {
+        loadingDiv = document.createElement("div");
+        loadingDiv.id = "file-merger-loading";
+        loadingDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.9);
+          color: white;
+          padding: 30px 40px;
+          border-radius: 10px;
+          font-family: monospace;
+          font-size: 16px;
+          z-index: 10000;
+          min-width: 300px;
+          text-align: center;
+        `;
+
+        loadingContent = document.createElement("div");
+        loadingContent.id = "file-merger-content";
+        loadingDiv.appendChild(loadingContent);
+        document.body.appendChild(loadingDiv);
+      }
+
+      function updateLoadingDisplay() {
+        if (!loadingContent) return;
+
+        const lines = [
+          '<div style="font-size: 18px; margin-bottom: 15px;">loading...</div>',
+        ];
+
+        config.files.forEach((file) => {
+          const status = mergeStatus[file.name] || "waiting";
+          const progress = mergeProgress[file.name] || {
+            current: 0,
+            total: file.parts,
+          };
+
+          let statusText = "";
+          let color = "#888";
+
+          if (status === "merging") {
+            statusText = ` merging... ${progress.current}/${progress.total}`;
+            color = "#ffa500";
+          } else if (status === "ready") {
+            statusText = "done";
+            color = "#00ff00";
+          } else if (status === "failed") {
+            statusText = "failed";
+            color = "#ff0000";
+          } else {
+            statusText = "Waiting...";
+          }
+
+          lines.push(
+            `<div style="margin: 8px 0; color: ${color};">${file.name}: ${statusText}</div>`
+          );
+        });
+
+        loadingContent.innerHTML = lines.join("");
+
+        const allDone = config.files.every(
+          (file) =>
+            mergeStatus[file.name] === "ready" ||
+            mergeStatus[file.name] === "failed"
+        );
+
+        if (allDone) {
+          setTimeout(() => {
+            loadingDiv.style.opacity = "0";
+            loadingDiv.style.transition = "opacity 0.5s";
+            setTimeout(() => loadingDiv.remove(), 500);
+          }, 1000);
+        }
+      }
+
+      function log() {
+        if (config.debug) console.log("[FileMerger]", ...arguments);
+      }
+
+      function error() {
+        console.error("[FileMerger]", ...arguments);
+      }
+
+      function normalizeUrl(url) {
+        try {
+          return decodeURIComponent(url.toString().split("?")[0]);
+        } catch (e) {
+          return url;
+        }
+      }
+
+      function urlsMatch(url1, url2) {
+        const norm1 = normalizeUrl(url1);
+        const norm2 = normalizeUrl(url2);
+
+        if (norm1 === norm2) return true;
+        if (norm1.endsWith(norm2) || norm2.endsWith(norm1)) return true;
+
+        return norm1.split("/").pop() === norm2.split("/").pop();
+      }
+
+      async function mergeSplitFiles(filePath, numParts) {
+        const fileName = filePath.split("/").pop();
+        mergeProgress[fileName] = { current: 0, total: numParts };
+        updateLoadingDisplay();
+
+        try {
+          const parts = [];
+          for (let i = 1; i <= numParts; i++) {
+            parts.push(`${filePath}.part${i}`);
+          }
+
+          log(`Merging ${filePath} from ${numParts} parts...`);
+
+          const buffers = [];
+          for (let i = 0; i < parts.length; i++) {
+            const response = await window.originalFetch(parts[i]);
+
+            if (!response.ok) {
+              if (response.status === 403 || response.status === 404) {
+                throw new Error(`Part missing: ${parts[i]}`);
+              }
+              throw new Error(
+                `failed to load sowwy (make a report in bug-reports in the discord) ${parts[i]}: ${response.status}`
+              );
+            }
+
+            const buffer = await response.arrayBuffer();
+            buffers.push(buffer);
+
+            mergeProgress[fileName].current = i + 1;
+            updateLoadingDisplay();
+          }
+
+          const totalSize = buffers.reduce((sum, buf) => sum + buf.byteLength, 0);
+          const mergedArray = new Uint8Array(totalSize);
+          let offset = 0;
+
+          for (const buffer of buffers) {
+            mergedArray.set(new Uint8Array(buffer), offset);
+            offset += buffer.byteLength;
+          }
+
+          log(` ${filePath} done: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
+          return mergedArray.buffer;
+        } catch (err) {
+          error(`Failed to merge ${filePath}:`, err);
+          throw err;
+        }
+      }
+
+      function shouldInterceptFile(url) {
+        const urlStr = normalizeUrl(url);
+        if (urlStr.includes(".part")) return null;
+
+        for (const file of config.files) {
+          const fileName = file.name;
+          const fullPath = config.basePath
+            ? `${config.basePath}${fileName}`
+            : fileName;
+
+          if (
+            urlsMatch(urlStr, fileName) ||
+            urlsMatch(urlStr, fullPath) ||
+            urlsMatch(urlStr, fileName + ".br") ||
+            urlsMatch(urlStr, fullPath + ".br")
+          ) {
+            return fileName;
+          }
+        }
+
+        return null;
+      }
+
+      function getMergedFile(filename) {
+        if (window.mergedFiles[filename]) return window.mergedFiles[filename];
+
+        for (const [key, value] of Object.entries(window.mergedFiles)) {
+          if (urlsMatch(key, filename)) return value;
+        }
+
+        return null;
+      }
+
+      if (!window.originalFetch) window.originalFetch = window.fetch;
+
+      window.fetch = function (url) {
+        const args = Array.prototype.slice.call(arguments, 1);
+        const filename = shouldInterceptFile(url);
+
+        if (filename) {
+          log("Intercepting fetch for:", filename);
+
+          return new Promise((resolve, reject) => {
+            const maxWait = 60000;
+            const startTime = Date.now();
+
+            const check = setInterval(() => {
+              const buffer = getMergedFile(filename);
+
+              if (buffer) {
+                clearInterval(check);
+                const contentType = filename.endsWith(".wasm")
+                  ? "application/wasm"
+                  : "application/octet-stream";
+                resolve(
+                  new Response(buffer, {
+                    status: 200,
+                    statusText: "OK",
+                    headers: {
+                      "Content-Type": contentType,
+                      "Content-Length": buffer.byteLength.toString(),
+                    },
+                  })
+                );
+              } else if (mergeStatus[filename] === "failed") {
+                clearInterval(check);
+                reject(new Error(`Merge failed for ${filename}`));
+              } else if (Date.now() - startTime > maxWait) {
+                clearInterval(check);
+                reject(new Error(`Timeout waiting for ${filename}`));
+              }
+            }, 100);
+          });
+        }
+
+        return window.originalFetch.call(this, url, ...args);
+      };
+
+      if (!window.OriginalXMLHttpRequest) {
+        window.OriginalXMLHttpRequest = window.XMLHttpRequest;
+      }
+
+      window.XMLHttpRequest = function (options) {
+        const xhr = new window.OriginalXMLHttpRequest(options);
+        const originalOpen = xhr.open;
+        const originalSend = xhr.send;
+        let requestUrl = "";
+
+        xhr.open = function (method, url) {
+          const args = Array.prototype.slice.call(arguments, 2);
+          requestUrl = url;
+          return originalOpen.call(this, method, url, ...args);
+        };
+
+        xhr.send = function () {
+          const args = Array.prototype.slice.call(arguments);
+          const filename = shouldInterceptFile(requestUrl);
+
+          if (filename) {
+            log("Intercepting XHR for:", filename);
+
+            const waitForMerge = () => {
+              const buffer = getMergedFile(filename);
+
+              if (buffer) {
+                Object.defineProperties(xhr, {
+                  status: { value: 200 },
+                  statusText: { value: "OK" },
+                  response: { value: buffer },
+                  responseType: { value: "arraybuffer" },
+                  readyState: { value: 4 },
+                });
+
+                setTimeout(() => {
+                  if (xhr.onreadystatechange) xhr.onreadystatechange();
+                  if (xhr.onload) xhr.onload({ type: "load", target: xhr });
+                }, 1);
+              } else if (mergeStatus[filename] === "failed") {
+                if (xhr.onerror) xhr.onerror(new Error("Merge Failed"));
+              } else {
+                setTimeout(waitForMerge, 100);
+              }
+            };
+
+            waitForMerge();
+            return;
+          }
+
+          return originalSend.call(this, ...args);
+        };
+
+        return xhr;
+      };
+
+      async function autoMergeFiles() {
+        if (!config.files.length) return;
+
+        updateLoadingDisplay();
+
+        try {
+          const promises = config.files.map((file) => {
+            const fullPath = config.basePath
+              ? `${config.basePath}${file.name}`
+              : file.name;
+
+            mergeStatus[file.name] = "merging";
+            updateLoadingDisplay();
+
+            return mergeSplitFiles(fullPath, file.parts)
+              .then((buffer) => {
+                window.mergedFiles[file.name] = buffer;
+                window.mergedFiles[fullPath] = buffer;
+                mergeStatus[file.name] = "ready";
+                updateLoadingDisplay();
+              })
+              .catch((err) => {
+                mergeStatus[file.name] = "failed";
+                updateLoadingDisplay();
+                error(err);
+              });
+          });
+
+          await Promise.all(promises);
+        } catch (e) {
+          error(e);
+        }
+      }
+
+      function init() {
+        if (document.body) {
+          initializeUI();
+          autoMergeFiles();
+        } else {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function () {
+              initializeUI();
+              autoMergeFiles();
+            });
+          } else {
+            setTimeout(init, 10);
+          }
+        }
+      }
+
+      init();
+    })();
+  </script>
+
+  <script>
+    var canvas = document.getElementById("unity-canvas");
+    var container = document.getElementById("gameContainer");
+    var loadingBar = document.getElementById("loadingBar");
+
+    var cdnBase = "https://cdn.jsdelivr.net/gh/3ejl/orbitzoneassets@latest/tung/Build";
+    var config = {
+      dataUrl:            cdnBase + "/tung-sahur-horror-v25051505.data.unityweb",
+      frameworkUrl:       cdnBase + "/tung-sahur-horror-v25051505.framework.js.unityweb",
+      codeUrl:            cdnBase + "/tung-sahur-horror-v25051505.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "azgames.io",
+      productName: "Tung Sahur Horror",
+      productVersion: "25051505",
+      pubId: "",
+      gameId: "tung-sahur-horror",
+      enableMoreGame: "yes",
+      enablePromotion: true,
+      eventLog: false
+    };
+
+    function onResize() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      var r = 540 / 960;
+      if (w * r > h) w = Math.ceil(h / r);
+      h = Math.floor(w * r);
+      container.style.width = canvas.style.width = w + "px";
+      container.style.height = canvas.style.height = h + "px";
+      container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
+      container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
+    }
+
+    onResize();
+    window.addEventListener("resize", onResize);
+
+    var script = document.createElement("script");
+    script.src = cdnBase + "/tung-sahur-horror-v25051505.loader.js";
+    script.onload = function() {
+      createUnityInstance(canvas, config, function(progress) {
+        document.getElementById("pct").innerText = Math.round(progress * 100) + "%";
+      }).then(function(instance) {
+        window.unityInstance = instance;
+        setTimeout(function() {
+          loadingBar.style.display = "none";
+          container.style.display = "block";
+          window.focus();
+        }, 2000);
+      }).catch(function(msg) {
+        alert(msg);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/gh/3ejl/orbitzoneassets@latest/tung/Build/tung-sahur-horror-v25051505.loader.js"></script>
+
+</body></html>
